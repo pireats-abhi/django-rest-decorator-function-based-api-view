@@ -1,13 +1,18 @@
 from .serializers import StudentSerializer
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Student
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
 @api_view(['GET', 'POST'])
+# @authentication_classes([SessionAuthentication, BasicAuthentication])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def students(request):
     if request.method == 'GET':
         students = Student.objects.all()
@@ -23,6 +28,9 @@ def students(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+# @authentication_classes([SessionAuthentication, BasicAuthentication])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def student(request, id):
     try:
         student = Student.objects.get(pk=id)
